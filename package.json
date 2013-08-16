@@ -1,0 +1,44 @@
+{
+  "name": "express-annotations",
+  "version": "0.0.1",
+  "description": "Module to augment Express routes with metadata",
+  "author": "Eric Ferraiuolo <eferraiuolo@gmail.com>",
+  "homepage": "https://github.com/yahoo/express-annotations",
+  "contributors": [
+    "alberto chan <imalberto@gmail.com>",
+    "Caridy Patino <caridy@gmail.com>"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": "",
+  "keywords": [
+    "express",
+    "routes"
+  ],
+  "peerDependencies": {
+    "express": "3.x"
+  },
+  "devDependencies": {
+    "chai": "1.5.x",
+    "istanbul": "*",
+    "jshint": "*",
+    "yui-lint": "*",
+    "mocha": "1.8.x",
+    "xunit-file": "*"
+  },
+  "bugs": {
+    "url": "https://git.corp.yahoo.com/modown/express-annotations/issues"
+  },
+  "engines": {
+    "node": ">=0.8.x",
+    "npm": ">=1.2.10"
+  },
+  "scripts": {
+    "test": "node ./node_modules/istanbul/lib/cli.js cover -- ./node_modules/mocha/bin/_mocha tests/unit/*.js --reporter spec",
+    "unit": "node ./node_modules/.bin/mocha tests/unit/*.js --reporter spec",
+    "lint": "node ./node_modules/.bin/jshint --config ./node_modules/yui-lint/jshint.json ./*.js ./tests/unit/*.js"
+  },
+  "license": "BSD"
+}
