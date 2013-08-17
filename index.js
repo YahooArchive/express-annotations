@@ -38,6 +38,8 @@ function annotate(routePath, annotations) {
             }
         });
     });
+
+    return this;
 }
 
 function findAll(annotations) {
