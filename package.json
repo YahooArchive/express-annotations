@@ -1,6 +1,6 @@
 {
   "name": "express-annotations",
-  "version": "0.0.1",
+  "version": "0.0.1-beta-1",
   "description": "Module to augment Express routes with metadata",
   "author": "Eric Ferraiuolo <eferraiuolo@gmail.com>",
   "homepage": "https://github.com/yahoo/express-annotations",
@@ -29,7 +29,7 @@
     "xunit-file": "*"
   },
   "bugs": {
-    "url": "https://git.corp.yahoo.com/modown/express-annotations/issues"
+    "url": "https://github.com/yahoo/express-annotations/issues"
   },
   "engines": {
     "node": ">=0.8.x",
