@@ -18,7 +18,8 @@ function extendApp(app) {
 
 function annotate(routePath, annotations) {
     /* jshint validthis:true */
-    var routes = this.routes;
+    var routes    = this.routes,
+        regexPath = routePath instanceof RegExp && routePath.toString();
 
     // For annotation purposes, routes are treated as conceptual resources at a
     // URL, independent of which HTTP verb they were registered under. This
@@ -26,7 +27,13 @@ function annotate(routePath, annotations) {
     // get the specified `annotations` applied.
     Object.keys(routes).forEach(function (method) {
         routes[method].forEach(function (route) {
-            if (route.path === routePath) {
+            var path = route.path;
+
+            // The route paths match if they are the same string, or they are
+            // both regexps which `toString()` to the same string value.
+            if (path === routePath || (regexPath && (path instanceof RegExp) &&
+                    path.toString() === regexPath)) {
+
                 if (!route.annotations) {
                     // Defines this route's "hidden", non-enumerable
                     // `annotations` property to hold its annotations.
