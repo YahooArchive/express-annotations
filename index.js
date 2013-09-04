@@ -53,7 +53,7 @@ function findAll(annotations) {
     /* jshint validthis:true */
 
     // Support a single array of annotations, or var-args.
-    if (!Array.isArray(annotations)) {
+    if (!(typeof annotations === 'function' || Array.isArray(annotations))) {
         annotations = [].slice.call(arguments);
     }
 
@@ -77,6 +77,13 @@ function findAll(annotations) {
 
 function hasAnnotations(route, annotations) {
     if (!route.annotations) { return false; }
+
+    // A function can be supplied instead of a collection of annotations, and in
+    // that case it's called and it return value is coerced into a boolean and
+    // returned.
+    if (typeof annotations === 'function') {
+        return !!annotations(route.annotations);
+    }
 
     // Annotations are specified as either a string name, or object of
     // name-value pairs.
