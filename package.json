@@ -1,6 +1,6 @@
 {
   "name": "express-annotations",
-  "version": "0.0.1-beta-2",
+  "version": "0.0.1",
   "description": "Module to augment Express routes with metadata",
   "author": "Eric Ferraiuolo <eferraiuolo@gmail.com>",
   "homepage": "https://github.com/yahoo/express-annotations",
@@ -12,7 +12,6 @@
   "scripts": {
     "test": "npm test"
   },
-  "repository": "",
   "keywords": [
     "express",
     "routes"
@@ -27,6 +26,10 @@
     "yui-lint": "*",
     "mocha": "1.8.x",
     "xunit-file": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url" : "git://github.com/yahoo/express-annotations.git"
   },
   "bugs": {
     "url": "https://github.com/yahoo/express-annotations/issues"
