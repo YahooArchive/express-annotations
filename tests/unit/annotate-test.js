@@ -45,7 +45,7 @@ describe('test suite name', function () {
             app.annotate('/posts/', { foo: 'FOO' });
 
             // console.log(routes.get[0].annotations);
-            assert.deepEqual(routes.get[0].annotations,
+            assert.deepEqual(app.annotations['/posts/'],
                              { foo: 'FOO' },
                              'failed to annotate foo: "FOO" for path /posts/');
         });
@@ -56,9 +56,10 @@ describe('test suite name', function () {
             assert.isFunction(app.findAll);
 
             var r = app.findAll({name: 'foo'});
+            console.log(app.routes);
 
-            assert.isArray(r, 'app.findall() should return an array');
-            assert.strictEqual(0, r.length, '0 found routes expected');
+            assert.isObject(r, 'app.findAll() should return an object');
+            assert.isUndefined(r.get, 'No routes expected');
         });
 
         it('should find the first route with given annotations', function () {
@@ -66,9 +67,10 @@ describe('test suite name', function () {
             app.annotate('/posts/', { name: 'foo' });
             var r = app.findAll({name: 'foo'});
 
-            assert.isArray(r, 'app.findAll() should return an array');
-            assert.strictEqual(1, r.length, '1 found routes expected');
-            assert.strictEqual('/posts/', r[0].path, 'wrong route.path');
+            assert.isObject(r, 'app.findAll() should return an object');
+            assert.isArray(r.get, 'there should be `get` routes');
+            assert.strictEqual(1, r.get.length, '1 found routes expected');
+            assert.strictEqual('/posts/', r.get[0].path, 'wrong route.path');
         });
 
         it('should not find any route since annotations did not match', function () {
@@ -77,8 +79,8 @@ describe('test suite name', function () {
 
             var r = app.findAll({name: 'foo', 'class': 2000 });
 
-            assert.isArray(r, 'app.findAll() should return an array');
-            assert.strictEqual(0, r.length, '0 found routes expected');
+            assert.isObject(r, 'app.findAll() should return an object');
+            assert.isUndefined(r.get, 'No routes expected');
         });
 
     });

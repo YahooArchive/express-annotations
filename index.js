@@ -10,42 +10,23 @@ function extendApp(app) {
 
     // Modifies the Express `app` by adding the `annotate()` and `findAll()`
     // methods.
-    app.annotate = annotate;
-    app.findAll  = findAll;
+    app.annotations = {};
+    app.annotate    = annotate;
+    app.findAll     = findAll;
 
     return app;
 }
 
 function annotate(routePath, annotations) {
     /* jshint validthis:true */
-    var routes    = this.routes,
-        regexPath = routePath instanceof RegExp && routePath.toString();
+    if (typeof routePath !== 'string') {
+        throw new TypeError('Annotations require routePath to be a String');
+    }
 
-    // For annotation purposes, routes are treated as conceptual resources at a
-    // URL, independent of which HTTP verb they were registered under. This
-    // means all of this app's routes which match the specified `routePath` will
-    // get the specified `annotations` applied.
-    Object.keys(routes).forEach(function (method) {
-        routes[method].forEach(function (route) {
-            var path = route.path;
+    var pathAnnotations = this.annotations[routePath] ||
+            (this.annotations[routePath] = {});
 
-            // The route paths match if they are the same string, or they are
-            // both regexps which `toString()` to the same string value.
-            if (path === routePath || (regexPath && (path instanceof RegExp) &&
-                    path.toString() === regexPath)) {
-
-                if (!route.annotations) {
-                    // Defines this route's "hidden", non-enumerable
-                    // `annotations` property to hold its annotations.
-                    Object.defineProperty(route, 'annotations', {value: {}});
-                }
-
-                // Merge the specified `annotations` onto this route.
-                extend(route.annotations, annotations);
-            }
-        });
-    });
-
+    extend(pathAnnotations, annotations);
     return this;
 }
 
@@ -57,47 +38,56 @@ function findAll(annotations) {
         annotations = [].slice.call(arguments);
     }
 
-    var allRoutes = this.routes;
+    var appAnnotations = this.annotations,
+        routes         = this.routes;
 
-    // Reduce the collection of this app's routes down to those which match
-    // _all_ of the specified `annotations`, and return them as an array.
-    return Object.keys(allRoutes).reduce(function (routes, method) {
-        allRoutes[method].forEach(function (route) {
-            if (hasAnnotations(route, annotations)) {
-                routes.push(route);
+    // Iterate all the app's routes, and return a reduced set based on the
+    // specified `annotations`.
+    return Object.keys(routes).reduce(function (map, method) {
+        var matched = [];
+
+        routes[method].forEach(function (route) {
+            var pathAnnotations = typeof route.path === 'string' &&
+                    appAnnotations[route.path];
+
+            if (hasAnnotations(pathAnnotations, annotations)) {
+                matched.push(route);
             }
         });
 
-        // Initial array passed into this reduce function.
-        return routes;
-    }, []);
+        if (matched.length) {
+            map[method] = matched;
+        }
+
+        return map;
+    }, {});
 }
 
 // -- Helper Functions ---------------------------------------------------------
 
-function hasAnnotations(route, annotations) {
-    if (!route.annotations) { return false; }
+function hasAnnotations(pathAnnotations, annotations) {
+    if (!pathAnnotations) { return false; }
 
     // A function can be supplied instead of a collection of annotations, and in
     // that case it's called and it return value is coerced into a boolean and
     // returned.
     if (typeof annotations === 'function') {
-        return !!annotations(route.annotations);
+        return !!annotations(pathAnnotations);
     }
 
     // Annotations are specified as either a string name, or object of
     // name-value pairs.
     return annotations.every(function (annotation) {
-        // Only an annotation name was provided, no value, so if the route has
-        // an annotation property with that name, count it!
+        // Only an annotation name was provided, no value, so if the path has an
+        // annotation property with that name, count it!
         if (typeof annotation === 'string') {
-            return route.annotations.hasOwnProperty(annotation);
+            return pathAnnotations.hasOwnProperty(annotation);
         }
 
         // Annotation is an object of name-value pairs, so all values need to
-        // match the route's annotations for it to be counted.
+        // match the path's annotations for it to be counted.
         return Object.keys(annotation).every(function (name) {
-            return route.annotations[name] === annotation[name];
+            return pathAnnotations[name] === annotation[name];
         });
     });
 }
