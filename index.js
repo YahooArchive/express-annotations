@@ -1,3 +1,9 @@
+/*
+Copyright (c) 2013, Yahoo! Inc. All rights reserved.
+Copyrights licensed under the New BSD License.
+See the accompanying LICENSE file for terms.
+*/
+
 'use strict';
 
 exports.extend = extendApp;
@@ -33,7 +39,7 @@ function annotate(routePath, annotations) {
 function findAll(annotations) {
     /* jshint validthis:true */
 
-    // Support a single array of annotations, or var-args.
+    // Support a function, single array of annotations, or var-args.
     if (!(typeof annotations === 'function' || Array.isArray(annotations))) {
         annotations = [].slice.call(arguments);
     }
@@ -44,19 +50,15 @@ function findAll(annotations) {
     // Iterate all the app's routes, and return a reduced set based on the
     // specified `annotations`.
     return Object.keys(routes).reduce(function (map, method) {
-        var matched = [];
-
-        routes[method].forEach(function (route) {
+        var matches = routes[method].filter(function (route) {
             var pathAnnotations = typeof route.path === 'string' &&
                     appAnnotations[route.path];
 
-            if (hasAnnotations(pathAnnotations, annotations)) {
-                matched.push(route);
-            }
+            return hasAnnotations(pathAnnotations, annotations);
         });
 
-        if (matched.length) {
-            map[method] = matched;
+        if (matches.length) {
+            map[method] = matches;
         }
 
         return map;
