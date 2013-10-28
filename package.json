@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "chai": "1.5.x",
+    "express": "3.x",
     "istanbul": "*",
     "jshint": "*",
     "mocha": "1.8.x",
