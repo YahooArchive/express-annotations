@@ -1,4 +1,4 @@
-/*jslint nomen:true, node:true*/
+/*jslint nomen:true, node:true, expr:true*/
 /*global describe, beforeEach, afterEach, it*/
 
 'use strict';
@@ -6,7 +6,7 @@
 var expect      = require('chai').expect,
     annotations = require('../../'),
     express     = require('express'),
-    
+
     app;
 
 describe('Express Annotations', function () {
@@ -51,7 +51,7 @@ describe('Express Annotations', function () {
             expect(function () {
                 app.annotate(/^\/\/?$/i, {
                     label: 'Home'
-                })
+                });
             }).to.throw(TypeError, 'Annotations require routePath to be a String');
         });
 
@@ -167,7 +167,7 @@ describe('Express Annotations', function () {
             });
 
             it('should accept an object and return all routes with those annotation key/value pairs', function () {
-                var routes = app.findAll({ 
+                var routes = app.findAll({
                     section: 'blog'
                 });
 
