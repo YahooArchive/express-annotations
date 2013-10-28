@@ -47,6 +47,14 @@ describe('Express Annotations', function () {
             expect(appInstance).to.deep.equal(app);
         });
 
+        it('should only accept route paths as strings', function () {
+            expect(function () {
+                app.annotate(/^\/\/?$/i, {
+                    label: 'Home'
+                })
+            }).to.throw(TypeError, 'Annotations require routePath to be a String');
+        });
+
         it('should annotate a path correctly with an annotations object', function () {
             app.annotate('/blog/:post', {
                 label: 'Blog Post',
@@ -151,45 +159,50 @@ describe('Express Annotations', function () {
                 // Examine the found routes
                 expect(routes.get).to.be.an('array');
                 expect(routes.get).to.have.length(4);
+
+                // Check paths of each route
+                expect(routes.get.map(function (route) {
+                    return route.path;
+                })).to.include('/classes/2010', '/classes/2011', '/classes/2012', '/classes/2013');
             });
 
             it('should accept an object and return all routes with those annotation key/value pairs', function () {
                 var routes = app.findAll({ 
-                    section: 'app'
+                    section: 'blog'
                 });
 
                 // Again, only GET routes for this test
-                expect(routes).to.contain.key('get');
                 expect(routes.get).to.be.an('array');
-                expect(routes.get).to.have.length(5);
+                expect(routes.get).to.have.length(2);
+
+                // Check paths of each route
+                expect(routes.get.map(function (route) {
+                    return route.path;
+                })).to.include('/blog', '/blog/:post');
             });
 
             it('should accept an array of annotations and return all matching routes', function () {
                 var routes = app.findAll(['index', { section: 'app' }]),
                     route;
 
-                expect(routes).to.contain.key('get');
                 expect(routes.get).to.be.an('array');
                 expect(routes.get).to.have.length(1);
 
                 route = routes.get[0];
 
-                expect(route).to.contain.key('path');
-                expect(route.path).to.equal('/');
+                expect(route).to.have.property('path', '/');
             });
 
             it('should accept a variable number of arguments as annotation filters', function () {
                 var routes = app.findAll('index', { section: 'blog' }),
                     route;
 
-                expect(routes).to.contain.key('get');
                 expect(routes.get).to.be.an('array');
                 expect(routes.get).to.have.length(1);
 
                 route = routes.get[0];
 
-                expect(route).to.contain.key('path');
-                expect(route.path).to.equal('/blog');
+                expect(route).to.have.property('path', '/blog');
             });
 
             it('should accept a function and return all matching routes', function () {
@@ -197,9 +210,45 @@ describe('Express Annotations', function () {
                     return annotations.year > 2011;
                 });
 
-                expect(routes).to.contain.key('get');
                 expect(routes.get).to.be.an('array');
                 expect(routes.get).to.have.length(2);
+
+                expect(routes.get.map(function (route) {
+                    return route.path;
+                })).to.include('/classes/2012', '/classes/2013');
+            });
+
+            it('should return an empty object for an unmatched filter', function () {
+                var routes = app.findAll('nothing');
+
+                expect(routes).to.be.an('object');
+                expect(routes).to.be.empty;
+            });
+
+            it('should match routes between different HTTP methods', function () {
+                var routes = app.findAll({ label: 'Blog' });
+
+                // '/blog' has both GET and POST routes
+                expect(routes).to.contain.keys('get', 'post');
+
+                expect(routes.get).to.be.an('array');
+                expect(routes.post).to.be.an('array');
+
+                expect(routes.get[0]).to.have.property('path', '/blog');
+                expect(routes.post[0]).to.have.property('path', '/blog');
+            });
+
+            it('should contain the correct information inside each route', function () {
+                var routes = app.findAll({ label: 'Blog Post' }),
+                    route = routes.get[0];
+
+                expect(route).to.contain.keys('path', 'method', 'callbacks', 'keys', 'regexp');
+
+                expect(route.path).to.be.a('string');
+                expect(route.method).to.be.a('string');
+                expect(route.callbacks).to.be.an('array');
+                expect(route.keys).to.be.an('array');
+                expect(route.regexp).to.be.a('regexp');
             });
         });
     });
