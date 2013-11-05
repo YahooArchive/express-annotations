@@ -1,8 +1,8 @@
 Express Annotations Change History
 ==================================
 
-NEXT
-----
+0.0.2 (2013-11-05)
+------------------
 
 * Added unit tests with 100% converage. ([#7][] @clarle)
 
