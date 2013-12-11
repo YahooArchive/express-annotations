@@ -1,6 +1,6 @@
 {
   "name": "express-annotations",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Module to augment Express routes with metadata",
   "author": "Eric Ferraiuolo <eferraiuolo@gmail.com>",
   "homepage": "https://github.com/yahoo/express-annotations",

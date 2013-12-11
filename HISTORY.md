@@ -1,8 +1,8 @@
 Express Annotations Change History
 ==================================
 
-NEXT
-----
+0.1.0 (2013-12-11)
+------------------
 
 * Added documentation to README. ([#9][] @clarle)
 
