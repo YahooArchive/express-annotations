@@ -1,6 +1,18 @@
 Express Annotations Change History
 ==================================
 
+NEXT
+----
+
+* Added documentation to README. ([#9][] @clarle)
+
+* Fixed test script so it runs on Windows ([#11][] @juandopazo)
+
+
+[#9]: https://github.com/yahoo/express-annotations/issues/9
+[#11]: https://github.com/yahoo/express-annotations/issues/11
+
+
 0.0.2 (2013-11-05)
 ------------------
 
