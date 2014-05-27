@@ -8,19 +8,19 @@ See the accompanying LICENSE file for terms.
 
 exports.extend = extendApp;
 
-function extendApp(app) {
-    if (app['@annotations']) { return app; }
+function extendApp(object) {
+    if (object['@annotations']) { return object; }
 
     // Brand.
-    Object.defineProperty(app, '@annotations', {value: true});
+    Object.defineProperty(object, '@annotations', {value: true});
 
-    // Modifies the Express `app` by adding the `annotate()` and `findAll()`
-    // methods.
-    app.annotations = {};
-    app.annotate    = annotate;
-    app.findAll     = findAll;
+    // Modifies the Express `app` or router by adding the 
+    // `annotate()` and `findAll()` methods.
+    object.annotations = {};
+    object.annotate    = annotate;
+    object.findAll     = findAll;
 
-    return app;
+    return object;
 }
 
 function annotate(routePath, annotations) {
@@ -45,10 +45,55 @@ function findAll(annotations) {
     }
 
     var appAnnotations = this.annotations,
-        routes         = this.routes;
+        routes         = this.routes || this.stack || (this._router && this._router.stack);
 
     // Iterate all the app's routes, and return a reduced set based on the
     // specified `annotations`.
+    if (Array.isArray(routes)) {
+        return filterExpressRoutes(appAnnotations, annotations, routes);
+    } else if (typeof routes == 'object' && routes !== null) {
+        return filterLegacyExpressRoutes(appAnnotations, annotations, routes);
+    } else {
+        return {};
+    }
+}
+
+// -- Helper Functions ---------------------------------------------------------
+
+function filterExpressRoutes(appAnnotations, annotations, routes) {
+    var matches = routes.filter(function (stackHandler) {
+        var route = stackHandler.route,
+            pathAnnotations;
+
+        pathAnnotations = route && typeof route.path === 'string' &&
+            appAnnotations[route.path];
+
+        return hasAnnotations(pathAnnotations, annotations);
+    });
+
+    return matches.reduce(function (map, match) {
+        var stackRoute = match.route,
+            stack = stackRoute && stackRoute.stack;
+
+        if (stack) {
+            stack.map(function (stackItem) {
+                map[stackItem.method] = map[stackItem.method] || [];
+
+                map[stackItem.method].push({
+                    path     : stackRoute.path,
+                    method   : stackItem.method,
+                    callbacks: [stackItem.handle],
+                    keys     : match.keys,
+                    regexp   : match.regexp
+                }); 
+            });
+        }
+
+        return map;
+    }, {});
+}
+
+function filterLegacyExpressRoutes(appAnnotations, annotations, routes) {
     return Object.keys(routes).reduce(function (map, method) {
         var matches = routes[method].filter(function (route) {
             var pathAnnotations = typeof route.path === 'string' &&
@@ -65,7 +110,6 @@ function findAll(annotations) {
     }, {});
 }
 
-// -- Helper Functions ---------------------------------------------------------
 
 function hasAnnotations(pathAnnotations, annotations) {
     if (!pathAnnotations) { return false; }
