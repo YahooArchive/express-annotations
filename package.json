@@ -14,6 +14,9 @@
     "modown",
     "routes"
   ],
+  "dependencies": {
+    "methods": "1.0.0"
+  },
   "peerDependencies": {
     "express": ">=3.x"
   },
