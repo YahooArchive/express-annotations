@@ -110,7 +110,7 @@ function filterExpressRoutes(appAnnotations, annotations, routes) {
 }
 
 function filterLegacyExpressRoutes(appAnnotations, annotations, routes) {
-    // Routes in Express 3.x are an object keyed of 
+    // Routes in Express 3.x are an object keyed off of the HTTP method 
     return Object.keys(routes).reduce(function (map, method) {
         var matches = routes[method].filter(function (route) {
             var pathAnnotations = typeof route.path === 'string' &&
