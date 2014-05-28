@@ -77,32 +77,31 @@ function filterExpressRoutes(appAnnotations, annotations, routes) {
 
     return matches.reduce(function (map, match) {
         var stackRoute = match.route,
-            stack = stackRoute && stackRoute.stack;
+            stack = stackRoute && stackRoute.stack,
+            route = {
+                path  : stackRoute.path,
+                keys  : match.keys,
+                regexp: match.regexp
+            };
 
         // If this is a generic route added through `router.route()`
         // or through `router.VERB()`.
         if (stack && Array.isArray(stack)) {
             stack.map(function (stackItem) {
-                map[stackItem.method] = map[stackItem.method] || [];
+                var method = stackItem.method;
 
-                map[stackItem.method].push({
-                    path  : stackRoute.path,
-                    method: stackItem.method,
-                    keys  : match.keys,
-                    regexp: match.regexp
-                }); 
+                map[method] = map[method] || [];
+                route.method = method;
+
+                map[method].push(route); 
             });
         // If this is a route added through `router.all()`
         } else if (stack && typeof(stack) === 'function') {
             methods.map(function (method) {
                 map[method] = map[method] || [];
+                route.method = method;
 
-                map[method].push({
-                    path  : stackRoute.path,
-                    method: method,
-                    keys  : match.keys,
-                    regexp: match.regexp   
-                });
+                map[method].push(route);
             });
         }
 
