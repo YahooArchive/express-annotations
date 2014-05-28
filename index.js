@@ -8,9 +8,9 @@ See the accompanying LICENSE file for terms.
 
 var methods = require('methods');
 
-exports.extend = extendApp;
+exports.extend = extendObject;
 
-function extendApp(object) {
+function extendObject(object) {
     if (object['@annotations']) { return object; }
 
     // Brand.
@@ -110,6 +110,7 @@ function filterExpressRoutes(appAnnotations, annotations, routes) {
 }
 
 function filterLegacyExpressRoutes(appAnnotations, annotations, routes) {
+    // Routes in Express 3.x are an object keyed of 
     return Object.keys(routes).reduce(function (map, method) {
         var matches = routes[method].filter(function (route) {
             var pathAnnotations = typeof route.path === 'string' &&
