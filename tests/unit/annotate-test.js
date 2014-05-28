@@ -242,11 +242,10 @@ describe('Express Annotations', function () {
                 var routes = app.findAll({ label: 'Blog Post' }),
                     route = routes.get[0];
 
-                expect(route).to.contain.keys('path', 'method', 'callbacks', 'keys', 'regexp');
+                expect(route).to.contain.keys('path', 'method', 'keys', 'regexp');
 
                 expect(route.path).to.be.a('string');
                 expect(route.method).to.be.a('string');
-                expect(route.callbacks).to.be.an('array');
                 expect(route.keys).to.be.an('array');
                 expect(route.regexp).to.be.a('regexp');
             });
