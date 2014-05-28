@@ -6,6 +6,8 @@ See the accompanying LICENSE file for terms.
 
 'use strict';
 
+var methods = require('methods');
+
 exports.extend = extendApp;
 
 function extendApp(object) {
@@ -61,6 +63,8 @@ function findAll(annotations) {
 // -- Helper Functions ---------------------------------------------------------
 
 function filterExpressRoutes(appAnnotations, annotations, routes) {
+    // Express 4.x has routes in an array (stack), rather than
+    // keyed of by their HTTP method.
     var matches = routes.filter(function (stackHandler) {
         var route = stackHandler.route,
             pathAnnotations;
@@ -75,17 +79,30 @@ function filterExpressRoutes(appAnnotations, annotations, routes) {
         var stackRoute = match.route,
             stack = stackRoute && stackRoute.stack;
 
-        if (stack) {
+        // If this is a generic route added through `router.route()`
+        // or through `router.VERB()`.
+        if (stack && Array.isArray(stack)) {
             stack.map(function (stackItem) {
                 map[stackItem.method] = map[stackItem.method] || [];
 
                 map[stackItem.method].push({
-                    path     : stackRoute.path,
-                    method   : stackItem.method,
-                    callbacks: [stackItem.handle],
-                    keys     : match.keys,
-                    regexp   : match.regexp
+                    path  : stackRoute.path,
+                    method: stackItem.method,
+                    keys  : match.keys,
+                    regexp: match.regexp
                 }); 
+            });
+        // If this is a route added through `router.all()`
+        } else if (stack && typeof(stack) === 'function') {
+            methods.map(function (method) {
+                map[method] = map[method] || [];
+
+                map[method].push({
+                    path  : stackRoute.path,
+                    method: method,
+                    keys  : match.keys,
+                    regexp: match.regexp   
+                });
             });
         }
 
