@@ -15,22 +15,22 @@
     "routes"
   ],
   "dependencies": {
-    "methods": "1.0.0"
+    "methods": "^1.0.0"
   },
   "peerDependencies": {
     "express": ">=3.x"
   },
   "devDependencies": {
-    "chai": "1.5.x",
+    "chai": "^1.9.1",
     "express": "4.x",
     "istanbul": "*",
     "jshint": "*",
-    "mocha": "1.8.x",
+    "mocha": "^1.20.0",
     "xunit-file": "*"
   },
   "repository": {
     "type": "git",
-    "url" : "git://github.com/yahoo/express-annotations.git"
+    "url": "git://github.com/yahoo/express-annotations.git"
   },
   "bugs": {
     "url": "https://github.com/yahoo/express-annotations/issues"
