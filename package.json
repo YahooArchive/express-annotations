@@ -5,8 +5,9 @@
   "author": "Eric Ferraiuolo <eferraiuolo@gmail.com>",
   "homepage": "https://github.com/yahoo/express-annotations",
   "contributors": [
-    "alberto chan <imalberto@gmail.com>",
-    "Caridy Patino <caridy@gmail.com>"
+    "Alberto Chan <imalberto@gmail.com>",
+    "Caridy Patino <caridy@gmail.com>",
+    "Clarence Leung <clarle@yahoo-inc.com>"
   ],
   "main": "index.js",
   "keywords": [
