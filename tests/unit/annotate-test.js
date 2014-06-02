@@ -52,7 +52,7 @@ describe('Express Annotations', function () {
                 app.annotate(/^\/\/?$/i, {
                     label: 'Home'
                 });
-            }).to.throw(TypeError, 'Annotations require routePath to be a String');
+            }).to.throw(TypeError, 'Annotations require route path to be a String');
         });
 
         it('should annotate a path correctly with an annotations object', function () {
