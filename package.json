@@ -5,8 +5,9 @@
   "author": "Eric Ferraiuolo <eferraiuolo@gmail.com>",
   "homepage": "https://github.com/yahoo/express-annotations",
   "contributors": [
-    "alberto chan <imalberto@gmail.com>",
-    "Caridy Patino <caridy@gmail.com>"
+    "Alberto Chan <imalberto@gmail.com>",
+    "Caridy Patino <caridy@gmail.com>",
+    "Clarence Leung <clarle@yahoo-inc.com>"
   ],
   "main": "index.js",
   "keywords": [
@@ -14,20 +15,23 @@
     "modown",
     "routes"
   ],
+  "dependencies": {
+    "methods": "^1.0.0"
+  },
   "peerDependencies": {
-    "express": "3.x"
+    "express": ">=3.x"
   },
   "devDependencies": {
-    "chai": "1.5.x",
-    "express": "3.x",
+    "chai": "^1.9.1",
+    "express": "4.x",
     "istanbul": "*",
     "jshint": "*",
-    "mocha": "1.8.x",
+    "mocha": "^1.20.0",
     "xunit-file": "*"
   },
   "repository": {
     "type": "git",
-    "url" : "git://github.com/yahoo/express-annotations.git"
+    "url": "git://github.com/yahoo/express-annotations.git"
   },
   "bugs": {
     "url": "https://github.com/yahoo/express-annotations/issues"
