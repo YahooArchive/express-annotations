@@ -6,21 +6,16 @@ See the accompanying LICENSE file for terms.
 
 'use strict';
 
-exports.extend = extendApp;
+var extendExpress = require('express-extend');
+
+exports.extend = extendExpress('@annotations', exports, extendApp);
 
 function extendApp(app) {
-    if (app['@annotations']) { return app; }
-
-    // Brand.
-    Object.defineProperty(app, '@annotations', {value: true});
-
     // Modifies the Express `app` by adding the `annotate()` and `findAll()`
     // methods.
     app.annotations = {};
     app.annotate    = annotate;
     app.findAll     = findAll;
-
-    return app;
 }
 
 function annotate(routePath, annotations) {
